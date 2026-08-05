@@ -74,7 +74,7 @@ def Binomial(xp, beta, gamma, N):  # where xp = X_{t-1}
 # State Space Model
 
 class ChainBinomialModel(ssm.StateSpaceModel):
-    default_params = {'N': 10000}
+    default_params = {'N': 10000, 'n_i': 10}
     def PX0(self):                                                      # Initial state of SIR
         return Initial(self.N, self.n_i)
     def PX(self, t, xp):                                                # Hidden Markov process
