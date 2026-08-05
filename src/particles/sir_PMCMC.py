@@ -74,18 +74,18 @@ def Binomial(xp, beta, gamma, N):  # where xp = X_{t-1}
 # State Space Model
 
 class ChainBinomialModel(ssm.StateSpaceModel):
-    default_params = {'N': 10000, 'n_i': 10}
+    default_params = {'N': 10000, 'n_i': 10, 'rho': 0.25, 'phi': 2}
     def PX0(self):                                                      # Initial state of SIR
         return Initial(self.N, self.n_i)
     def PX(self, t, xp):                                                # Hidden Markov process
         return Binomial(xp, self.beta, self.gamma, self.N)
     def PY(self, t, xp, x):                                             # Observation model 
-        rho = self.rho  # reporting probability
-        mu = rho * x['new_inf']     # mean (rho * incidences)
-        phi = self.phi # dispersion parameter
+        #self.rho = rho  # reporting probability
+        mu = self.rho * x['new_inf']     # mean (rho * incidences)
         mu2 = np.maximum(mu, 1e-6)
-        p = phi/(phi + mu2)
-        return NegativeBinomial(n = phi, p = p)
+        #self.phi = phi     # dispersion parameter
+        p = self.phi/(self.phi + mu2)
+        return NegativeBinomial(n = self.phi, p = p)
 
 
 # Change NumPy array to scalar
