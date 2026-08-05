@@ -1,0 +1,13 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+particles3.12/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# macOS
+.DS_Store
+
