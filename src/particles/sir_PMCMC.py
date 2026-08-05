@@ -86,3 +86,12 @@ class ChainBinomialModel(ssm.StateSpaceModel):
         mu2 = np.maximum(mu, 1e-6)
         p = phi/(phi + mu2)
         return NegativeBinomial(n = phi, p = p)
+
+
+# Change NumPy array to scalar
+class ScalarStructDist(dists.StructDist):
+    def logpdf(self, theta):
+        out = super().logpdf(theta)
+        if isinstance(out, np.ndarray) and out.shape == (1,):
+            return out[0]
+        return out
