@@ -44,7 +44,7 @@ class NegativeBinomial(DiscreteDist):
     def ppf(self, u):
         return stats.nbinom.ppf(u, self.n, self.p) # changed the order of n & p
 
-
+# Initial state of state space model (PX0)
 def Initial(N, n_i):  # where xp = X_{t-1}
     
     chainrule = OrderedDict()
@@ -55,7 +55,7 @@ def Initial(N, n_i):  # where xp = X_{t-1}
     chainrule['R'] = dists.Dirac(0)
     return dists.StructDist(chainrule)
 
-# Chain binomial process
+# Chain binomial process (PX)
 def Binomial(xp, beta, gamma, N):  # where xp = X_{t-1}
     # probabilites for new infetions and recoveries
     infection_prob = 1 - np.exp(-beta * xp['I'] / N)
@@ -72,7 +72,6 @@ def Binomial(xp, beta, gamma, N):  # where xp = X_{t-1}
     return dists.StructDist(chainrule)
 
 # State Space Model
-
 class ChainBinomialModel(ssm.StateSpaceModel):
     default_params = {'N': 10000, 'n_i': 10, 'rho': 0.25, 'phi': 2}
     def PX0(self):                                                      # Initial state of SIR
@@ -95,3 +94,17 @@ class ScalarStructDist(dists.StructDist):
         if isinstance(out, np.ndarray) and out.shape == (1,):
             return out[0]
         return out
+
+# Custom Moments function to account for ordered dictionary in state space model (Moments needs numerical array)
+def custom_mom(W, X):
+    X_arr = np.column_stack([
+        X['new_inf'],
+        X['new_rec'],
+        X['S'],
+        X['I'],
+        X['R'],
+    ])
+
+    mean = np.average(X_arr, weights=W, axis=0)  
+    var = np.average((X_arr - mean)**2, weights = W, axis = 0)
+    return {'mean': mean, 'var': var}
