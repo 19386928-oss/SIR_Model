@@ -16,3 +16,9 @@ model = ChainBinomialModel(N = 10000, beta = 0.3, gamma = 0.1, rho = 0.25, phi =
 x, y = model.simulate(100)
 
 simulation_df = pd.DataFrame(np.concatenate(x))
+
+with open("observed_data.pkl", 'wb') as output:
+    pickle.dump(y, output)
+
+with open("simulation.pkl", 'wb') as output:
+    pickle.dump(simulation_df, output)
