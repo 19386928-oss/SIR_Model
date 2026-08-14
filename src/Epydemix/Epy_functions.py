@@ -2,7 +2,6 @@ import numpy as np
 import arviz as az
 import pandas as pd
 import statistics
-import sys
 
 # SIR simulation
 def stochastic_sir(beta, gamma, N, n_i, timesteps):
@@ -95,3 +94,10 @@ def summary(param_1, param_2, posterior_1, posterior_2, decimal):
            }
     df_summary = pd.DataFrame(summary)
     return display(df_summary)
+
+
+def weighted_ess(chain, generation, smc):
+    weights = smc[chain].weights[generation]
+    w = weights / np.sum(weights)
+    ess = 1 / np.sum(w**2)
+    return ess
