@@ -1,4 +1,8 @@
 import numpy as np
+import arviz as az
+import pandas as pd
+import statistics
+import sys
 
 # SIR simulation
 def stochastic_sir(beta, gamma, N, n_i, timesteps):
