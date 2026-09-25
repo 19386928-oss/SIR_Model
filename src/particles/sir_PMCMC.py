@@ -71,9 +71,9 @@ def Binomial(xp, beta, gamma, N):  # where xp = X_{t-1}
     chainrule['R'] = dists.Cond(lambda x: dists.Dirac(xp['R'].astype(int) + x['new_rec']))
     return dists.StructDist(chainrule)
 
-# State Space Model
+# State Space Model for noisy incidence count
 class ChainBinomialModel(ssm.StateSpaceModel):
-    default_params = {'N': 10000, 'n_i': 10, 'rho': 0.25, 'phi': 2}
+    default_params = {'N': 10000, 'n_i': 10, 'rho': .25, 'phi': 5}
     def PX0(self):                                                      # Initial state of SIR
         return Initial(self.N, self.n_i)
     def PX(self, t, xp):                                                # Hidden Markov process
@@ -85,6 +85,7 @@ class ChainBinomialModel(ssm.StateSpaceModel):
         #self.phi = phi     # dispersion parameter
         p = self.phi/(self.phi + mu2)
         return NegativeBinomial(n = self.phi, p = p)
+
 
 
 # Change NumPy array to scalar
