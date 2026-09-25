@@ -46,7 +46,7 @@ def stochastic_sir_noisy(beta, gamma, N, n_i, timesteps, rho, phi):
     R = 0
     S_arr, I_arr, R_arr = [S], [I], [R]
     incidence = [0]
-    noisy = []
+    noisy = [0]
 
     for _ in range(timesteps-1):
 
@@ -80,6 +80,7 @@ def stochastic_sir_noisy(beta, gamma, N, n_i, timesteps, rho, phi):
 def summary(param_1, param_2, posterior_1, posterior_2, decimal):
     summary = {'Parameter': [param_1, param_2],
            'Mean': [az.mean(posterior_1, round_to=decimal), az.mean(posterior_2, round_to=decimal)],
+           'Bias': [(0.45 - az.mean(posterior_1, round_to=decimal)), (0.08 - az.mean(posterior_2, round_to=decimal))],
            'Variance': [round(statistics.variance(posterior_1.flatten()),decimal), round(statistics.variance(posterior_2.flatten()),decimal)],
            'Std': [az.std(posterior_1, round_to=decimal), az.std(posterior_2, round_to=decimal)],
            'eti95_lb': [round(az.eti(posterior_1.flatten())[0],decimal), round(az.eti(posterior_2.flatten())[0],decimal)],
@@ -97,7 +98,7 @@ def summary(param_1, param_2, posterior_1, posterior_2, decimal):
 
 
 def weighted_ess(chain, generation, smc):
-    weights = smc[chain].weights[generation]
+    weights = smc[chain][0].weights[generation]
     w = weights / np.sum(weights)
     ess = 1 / np.sum(w**2)
     return ess
